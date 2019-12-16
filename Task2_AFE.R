@@ -350,7 +350,6 @@ IncompleteData$EducationLevel <- ordered(IncompleteData$EducationLevel,
     
     
     #### ---- Runing the best model:GBM with Salary and Age ---- 
-    
     gbm_model <- train(Brand~Age+Salary, data = TrainingSet, method = "gbm", trControl = fitControl, tuneLength = 5, preProcess = c("center", "scale"), na.action = na.omit )
     gbm_model
     PredictionBrand_gbm <- predict(gbm_model, TestingSet)
