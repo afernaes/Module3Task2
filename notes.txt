@@ -1,0 +1,12 @@
+General Comment:
+Very good work for ggplot and hypothesis testing.
+Clean code. Try for next time to upload usefull code only, you can
+have two version : test and final.
+A link with our code : http://rpubs.com/Gabrielcidral/brand-prediction-ubiqum
+As you can see, you got everything.
+Congrat !
+
+Line 74/76 ---> Relative path needed
+Line 134/135 ---> Can add captation in Ggplot to keep track of plots
+Line 138 ---> Miss the plus at the end of the line (title did not appear)
+Line 157/158 ---> Same, miss the + at the end of the line

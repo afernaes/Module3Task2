@@ -70,6 +70,11 @@ draw_confusion_matrix <- function(cm) {
 }  
 
 #### ---- Load Data ----
+
+#VAL -> Add relative path: 
+#library("rstudioapi")
+#setwd(dirname(getActiveDocumentContext()$path))
+
 CompleteData<-read.csv("CompleteResponses.csv")
 colnames(CompleteData)<-c("Salary", "Age","EducationLevel", "Car", "ZipCode", "Credit", "Brand")
 IncompleteData<-read.csv("SurveyIncomplete.csv")
@@ -98,7 +103,6 @@ IncompleteData$Brand <- factor(IncompleteData$Brand,
                              levels = c(0,1),
                              labels = c("NA","NA"))
 
-
 IncompleteData$ZipCode <- factor(IncompleteData$ZipCode,
                                levels = c(0:8),
                                labels = c("New England","Mid-Atlantic","East North Central","West North Central","South Atlantic","East South Central","West South Central","Mountain","Pacific"))
@@ -124,10 +128,14 @@ IncompleteData$EducationLevel <- ordered(IncompleteData$EducationLevel,
      scale_x_continuous(expand = c(0,0)) +
      labs(fill = 'Type', title = 'Brand Preference of the Complete Data') +
      coord_polar(theta = "y") +
-     theme_void()
-    
+     theme_void() +
+     labs(caption="Fig 1 : Brand distribution")
+   
+  # VAL You can add labs(captation=""()) so you dont have to write it in case your need paper repport.
+  # Always looks nice and professional
+   
   #More Data Exploration
-    ggplot(CompleteData, aes(x=Brand, fill=Brand)) + geom_bar() + theme_bw()
+    ggplot(CompleteData, aes(x=Brand, fill=Brand)) + geom_bar() + theme_bw() +
       ggtitle("Brand Preference Distribution") + ylab("Counts")+ theme(plot.title = element_text(hjust = 0.5))
     
   #Barchart with educational level added 
@@ -146,15 +154,15 @@ IncompleteData$EducationLevel <- ordered(IncompleteData$EducationLevel,
       theme(axis.text.x = element_text(angle=60, hjust=1)) 
     
     # Histogram of salary and brand
-    ggplot(CompleteData, aes(x=Salary, fill=Brand)) + geom_histogram(color="black", bins=30) + theme_classic()
+    ggplot(CompleteData, aes(x=Salary, fill=Brand)) + geom_histogram(color="black", bins=30) + theme_classic() +
     ggtitle("Brand Preference Salary Distribution") + ylab("Counts")+ theme(plot.title = element_text(hjust = 0.5))
     
     # Histogram of age and brand
-    ggplot(CompleteData, aes(x=Age, fill=Brand)) + geom_histogram(color="black", bins=30) + theme_classic()
+    ggplot(CompleteData, aes(x=Age, fill=Brand)) + geom_histogram(color="black", bins=30) + theme_classic() +
     ggtitle("Brand Preference Age Distribution") + ylab("Counts")+ theme(plot.title = element_text(hjust = 0.5))
     
     # Histogram of credit and brand
-    ggplot(CompleteData, aes(x=Credit, fill=Brand)) + geom_histogram(color="black", bins=30) + theme_classic()
+    ggplot(CompleteData, aes(x=Credit, fill=Brand)) + geom_histogram(color="black", bins=30) + theme_classic() +
     ggtitle("Brand Preference Age Distribution") + ylab("Counts")+ theme(plot.title = element_text(hjust = 0.5))
     
     #Density Plot Brand and Salary
@@ -168,7 +176,7 @@ IncompleteData$EducationLevel <- ordered(IncompleteData$EducationLevel,
     #Density Plot Brand and Credit
     ggplot(CompleteData, aes(x = Credit,  fill = Brand)) + theme_bw() + 
       geom_density(alpha = 0.8) + ggtitle("Brand Preference Credit Distribution") + ylab("Density")+ theme(plot.title = element_text(hjust = 0.5))
-    hist(CompleteData$Car)
+    #hist(CompleteData$Car)
     
     #Density Plot Salary
     ggplot(CompleteData, aes(x = Salary)) + theme_bw() + 
@@ -301,12 +309,14 @@ IncompleteData$EducationLevel <- ordered(IncompleteData$EducationLevel,
     start_time <- Sys.time()
    
     a <- c("Brand ~ Salary", "Brand ~ Salary + Age","Brand ~ Salary + Age + ZipCode")
-    b <- c("knn","gbm", "rf","C5.0")
+    b <- c("knn","gbm", "rf")#,"C5.0")
     compare_models <- c()
     predictions<-c()
     
     for ( i in a) {
+      print(i)
       for (j in b) {
+        print(j)
         Fit <- train(formula(i), data = TrainingSet, method = j, trControl = fitControl, tuneLength = 5, preProcess = c("center", "scale"), na.action = na.omit )
         pred <- predict(Fit, TestingSet)
         res <- postResample(pred, TestingSet$Brand)
@@ -316,7 +326,7 @@ IncompleteData$EducationLevel <- ordered(IncompleteData$EducationLevel,
     }
     
     names_columns <- c()
-    
+    # 9:43
     for (i in a) {
       for(j in b) {
         names_columns <- append(names_columns,paste(i,j))
